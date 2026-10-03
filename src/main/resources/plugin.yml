@@ -1,0 +1,22 @@
+name: RankList
+version: '${project.version}'
+main: me.nedayazady.RankListBukkit
+api-version: 1.16
+description: Custom player list for Bukkit/Spigot/Paper based on LuckPerms ranks
+authors: [Zjeu, nedayazady]
+softdepend: [LuckPerms, PlaceholderAPI]
+
+commands:
+  list:
+    description: Shows online players grouped and sorted by rank
+    aliases: [who, online]
+    permission: ranklist.use
+    permission-message: "§cYou do not have permission to execute this command."
+
+permissions:
+  ranklist.use:
+    description: Allows using the /list command
+    default: true
+  ranklist.reload:
+    description: Allows reloading the RankList configuration
+    default: op
