@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,12 +60,12 @@ public class RankListBukkit extends JavaPlugin implements CommandExecutor, TabCo
             getLogger().severe("Command 'list' could not be found in plugin.yml!");
         }
 
-        getLogger().info("RankListBukkit has been enabled successfully.");
+        getLogger().info("RankListBukkit (1.8 - 1.21+) enabled successfully.");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("RankListBukkit has been disabled.");
+        getLogger().info("RankListBukkit disabled.");
     }
 
     private void setupLuckPerms() {
@@ -75,13 +76,13 @@ public class RankListBukkit extends JavaPlugin implements CommandExecutor, TabCo
                 getLogger().info("Hooked into LuckPerms service.");
                 return;
             }
-        } catch (NoClassDefFoundError ignored) {
+        } catch (Throwable ignored) {
         }
 
         try {
             luckPerms = LuckPermsProvider.get();
             getLogger().info("Hooked into LuckPerms via LuckPermsProvider.");
-        } catch (IllegalStateException | NoClassDefFoundError e) {
+        } catch (Throwable e) {
             getLogger().warning("LuckPerms not found! Player ranks and prefixes will fall back to defaults.");
         }
     }
@@ -129,8 +130,8 @@ public class RankListBukkit extends JavaPlugin implements CommandExecutor, TabCo
             return true;
         }
 
-        // Prepare player list
-        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+        // Prepare player list with cross-version compatibility (1.8 to 1.21+)
+        List<Player> players = new ArrayList<>(getOnlinePlayersCompat());
 
         players.sort((p1, p2) -> {
             String group1 = getPrimaryGroup(p1);
@@ -229,12 +230,15 @@ public class RankListBukkit extends JavaPlugin implements CommandExecutor, TabCo
             setupLuckPerms();
         }
         if (luckPerms != null) {
-            User user = luckPerms.getUserManager().getUser(player.getUniqueId());
-            if (user != null) {
-                String prefix = user.getCachedData().getMetaData().getPrefix();
-                if (prefix != null && !prefix.isEmpty() && !prefix.equalsIgnoreCase("null")) {
-                    return prefix;
+            try {
+                User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+                if (user != null) {
+                    String prefix = user.getCachedData().getMetaData().getPrefix();
+                    if (prefix != null && !prefix.isEmpty() && !prefix.equalsIgnoreCase("null")) {
+                        return prefix;
+                    }
                 }
+            } catch (Throwable ignored) {
             }
         }
         return defaultPrefix;
@@ -245,15 +249,33 @@ public class RankListBukkit extends JavaPlugin implements CommandExecutor, TabCo
             setupLuckPerms();
         }
         if (luckPerms != null) {
-            User user = luckPerms.getUserManager().getUser(player.getUniqueId());
-            if (user != null) {
-                String group = user.getPrimaryGroup();
-                if (group != null && !group.isEmpty()) {
-                    return group;
+            try {
+                User user = luckPerms.getUserManager().getUser(player.getUniqueId());
+                if (user != null) {
+                    String group = user.getPrimaryGroup();
+                    if (group != null && !group.isEmpty()) {
+                        return group;
+                    }
                 }
+            } catch (Throwable ignored) {
             }
         }
         return "default";
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<? extends Player> getOnlinePlayersCompat() {
+        try {
+            Method method = Bukkit.class.getMethod("getOnlinePlayers");
+            Object result = method.invoke(null);
+            if (result instanceof Collection<?>) {
+                return (Collection<? extends Player>) result;
+            } else if (result instanceof Player[]) {
+                return Arrays.asList((Player[]) result);
+            }
+        } catch (Throwable ignored) {
+        }
+        return Bukkit.getOnlinePlayers();
     }
 
     public static String color(String message) {

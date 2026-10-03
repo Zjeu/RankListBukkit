@@ -1,8 +1,7 @@
 name: RankList
 version: '${project.version}'
 main: me.nedayazady.RankListBukkit
-api-version: 1.16
-description: Custom player list for Bukkit/Spigot/Paper based on LuckPerms ranks
+description: Custom player list for Bukkit/Spigot/Paper (1.8 - 1.21+) based on LuckPerms ranks
 authors: [Zjeu, nedayazady]
 softdepend: [LuckPerms, PlaceholderAPI]
 

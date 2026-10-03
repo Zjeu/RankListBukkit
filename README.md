@@ -1,8 +1,8 @@
 # RankList (Bukkit / Spigot / Paper)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.16%20--%201.21%2B-brightgreen.svg)](https://papermc.io)
-[![Java](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://www.oracle.com/java/)
+[![Minecraft Versions](https://img.shields.io/badge/Minecraft-1.8%20--%201.21%2B-brightgreen.svg)](https://papermc.io)
+[![Java](https://img.shields.io/badge/Java-8%20--%2021%2B-blue.svg)](https://www.oracle.com/java/)
 
 A Bukkit / Spigot / Paper port of **[RankListVelocity](https://github.com/Zjeu/RankListVelocity)** by [Zjeu](https://github.com/Zjeu).
 
@@ -90,10 +90,10 @@ sort-order:
 
 ---
 
-## 🔌 Dependencies
+## 🔌 Dependencies & Compatibility
 
-- **Server Software**: Paper, Purpur, Spigot, or CraftBukkit (1.16 - 1.21+)
-- **Java**: Java 17 or higher
+- **Server Software**: Paper, Purpur, Spigot, CraftBukkit (**1.8 - 1.21+**)
+- **Java**: Java 8 up to Java 21+
 - **LuckPerms**: Required for rank and prefix resolution
 - **PlaceholderAPI** *(Optional)*: Supported for custom placeholders
 
